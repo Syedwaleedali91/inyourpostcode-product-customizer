@@ -13,16 +13,15 @@ const colors = [
 
 export const ColorPicker = ({ selectedColor, onSelect }) => {
   return (
-    <div className="flex items-center gap-2">
-      {colors.slice(0, 3).map((color) => (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      {colors.map((color) => (
         <button
           key={color}
           onClick={() => onSelect(color)}
-          className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${
-            selectedColor === color 
-              ? 'border-primary scale-110 shadow-[0_0_15px_hsl(142_76%_56%/0.5)]' 
-              : 'border-border hover:border-primary/50'
-          }`}
+          className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${selectedColor === color
+            ? 'border-primary scale-110 shadow-[0_0_15px_hsl(142_76%_56%/0.5)]'
+            : 'border-border hover:border-primary/50'
+            }`}
           style={{ backgroundColor: color }}
         />
       ))}

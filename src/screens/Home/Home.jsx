@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shirt, Sparkles, Palette, Layers } from 'lucide-react';
-import { CyberButton } from '@/components/index.js';
+import { CyberButton, ProductCard } from '@/components/index.js';
+import productImage from '@/assets/Group 10.png';
+import logoImage from '@/assets/logo-fin1.png';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -16,39 +18,30 @@ export const Home = () => {
         <div className="absolute top-40 right-40 w-2 h-2 bg-primary rounded-full animate-glow-pulse animation-delay-1000" />
       </div>
       
-      <div className="relative z-10 text-center max-w-3xl">
+      <div className="relative z-10 text-center max-w-4xl">
         {/* Logo */}
-        <div className="mb-8">
+        <div className="mb-7">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30">
-              <Shirt size={32} className="text-primary-foreground" />
-            </div>
+              <img src={logoImage} alt="inyourpostcode" />
             <div className="text-left">
-              <h2 className="font-display font-bold text-2xl text-primary">IP</h2>
-              <p className="font-body text-sm text-muted-foreground leading-tight">IN YOUR<br/>POSTCODE</p>
+              
             </div>
           </div>
         </div>
         
         {/* Hero text */}
-        <h1 className="font-display font-black text-4xl md:text-6xl text-foreground mb-4 text-glow">
-          Create Your Own
-          <span className="block text-primary">Epic Design</span>
+        <h1 className="font-display font-black text-2xl md:text-4xl text-foreground mb-2 text-glow">
+          Create Your Own Epic Design
         </h1>
         
-        <p className="font-body text-xl text-muted-foreground mb-12 max-w-xl mx-auto">
+        <p className="font-body text-xl text-muted-foreground mb-16 max-w-2xl mx-auto">
           Design custom hoodies and shirts with our powerful editor. Upload images, add text, QR codes, and more.
         </p>
-        
-        {/* CTA Button */}
-        <CyberButton 
-          variant="primary" 
-          onClick={() => navigate('/customizer')}
-          className="text-lg px-8 py-4 mb-16"
-        >
-          <Sparkles size={20} />
-          Start Designing
-        </CyberButton>
+
+        {/* Product Card */}
+        <div className="flex justify-center mb-20">
+          <ProductCard imageUrl={productImage}  imageAlt="Premium Custom Shirt" />
+        </div>
         
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

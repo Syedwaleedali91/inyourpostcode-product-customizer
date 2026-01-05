@@ -1,40 +1,26 @@
-import React, { useState } from 'react';
-import { 
-  Upload, 
-  ImageOff, 
-  Image, 
-  Type, 
-  QrCode, 
-  Layers, 
-  Save,
-  Maximize2,
-  RotateCw,
-  Wand2,
-  Grid3X3,
-  ChevronLeft,
-  ChevronRight,
-  Undo2,
-  Redo2,
-  Maximize,
-  ZoomIn,
-  HelpCircle,
-  AlertTriangle
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useCustomizer } from '@/hooks/useCustomizer';
 import {
-  CyberButton,
-  ImageUploader,
   Gallery,
   TextEditor,
   QRCodeGenerator,
   LayersPanel,
-  AttributesBar,
-  ColorPicker,
-  HalftoneSelector,
-  ShirtCanvas
+  ShirtCanvas,
+  TopNavbar,
+  SecondNavbar,
+  LeftToolbar,
+  RightToolbar,
+  ViewToggleButtons,
+  DecorativeVectors
 } from '@/components/index.js';
+import geminiBackground from '@/assets/gemini.png';
+import shade2 from '@/assets/shade image 2.png';
+
+
 
 export const Customizer = () => {
+  const location = useLocation();
   const {
     layers,
     visibleLayers,
@@ -59,18 +45,28 @@ export const Customizer = () => {
   const [showLayers, setShowLayers] = useState(false);
   const [showHalftone, setShowHalftone] = useState(false);
   const [activeMode, setActiveMode] = useState(null);
+  const [productImage, setProductImage] = useState(null);
+  const [uploadKey, setUploadKey] = useState(0);
+  const [layer, setLayers] = useState('');
+
+  // Initialize with product image from home page
+  useEffect(() => {
+    if (location.state?.initialProductImage) {
+      setProductImage(location.state.initialProductImage);
+    }
+  }, [location.state]);
 
   const handleUpload = (imageData) => {
     addLayer('image', imageData, { width: 80, height: 80 });
   };
 
-  const handleBgRemove = () => {
-    // Placeholder for background removal logic
-    if (selectedLayer && selectedLayer.type === 'image') {
-      // In a real app, this would call a background removal API
-      alert('Background removal applied! (Placeholder)');
-    }
-  };
+  // const handleBgRemove = () => {
+  //   // Placeholder for background removal logic
+  //   if (selectedLayer && selectedLayer.type === 'image') {
+  //     // In a real app, this would call a background removal API
+  //     alert('Background removal applied! (Placeholder)');
+  //   }
+  // };
 
   const handleGallerySelect = (imageUrl) => {
     addLayer('image', imageUrl, { width: 80, height: 80 });
@@ -84,8 +80,15 @@ export const Customizer = () => {
     addLayer('qrcode', url, { width: 80, height: 80 });
   };
 
-  const handleResize = () => {
-    setActiveMode(activeMode === 'resize' ? null : 'resize');
+  // const handleResize = () => {
+  //   setActiveMode(activeMode === 'resize' ? null : 'resize');
+  // };
+
+  const handleDeleteLayer = (layerId) => {
+    setLayers(prevLayers => prevLayers.filter(layer => layer.id !== layerId));
+    if (selectedLayerId === layerId) {
+      setSelectedLayerId(null);
+    }
   };
 
   const handleRotate = () => {
@@ -100,8 +103,8 @@ export const Customizer = () => {
 
   const handleHalftone = (pattern) => {
     if (selectedLayer) {
-      updateLayer(selectedLayerId, { 
-        effects: { ...selectedLayer.effects, halftone: pattern } 
+      updateLayer(selectedLayerId, {
+        effects: { ...selectedLayer.effects, halftone: pattern }
       });
     }
   };
@@ -116,200 +119,148 @@ export const Customizer = () => {
     alert(`Order complete! Total: $${totalPrice}`);
   };
 
+
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="font-display font-bold text-xl text-primary">
-            IP<span className="text-foreground text-sm ml-1">IN YOUR<br/>POSTCODE</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 bg-primary/20 rounded-full px-4 py-2 border border-primary">
-          <span className="text-primary font-display text-sm">←</span>
-          <h1 className="font-display text-foreground text-lg">Create your Own Epic</h1>
-        </div>
-        
-        <div className="panel-cyber px-4 py-2">
-          <span className="font-display text-primary">Total Price: $ {totalPrice}</span>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Background with gemini.png */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat "
+        style={{
+          backgroundImage: `url('${geminiBackground}')`,
+          filter: '  brightness(0.4) contrast(1.1)',
+          zIndex: 0,
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col lg:flex-row p-4 gap-4">
-        {/* Left toolbar */}
-        <div className="flex flex-col gap-3 w-full lg:w-48">
-          <div className="flex gap-2 mb-2">
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <HelpCircle size={18} />
-            </button>
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <AlertTriangle size={18} />
-            </button>
-          </div>
-          
-          <ImageUploader onUpload={handleUpload} />
-          
-          <CyberButton onClick={handleBgRemove} icon={<ImageOff size={18} />}>
-            BG Remove
-          </CyberButton>
-          
-          <CyberButton onClick={() => setShowGallery(true)} icon={<Image size={18} />}>
-            Art Gallery
-          </CyberButton>
-          
-          <CyberButton onClick={() => setShowTextEditor(true)} icon={<Type size={18} />}>
-            Add Text
-          </CyberButton>
-          
-          <CyberButton onClick={() => setShowQRGenerator(true)} icon={<QrCode size={18} />}>
-            QR Code
-          </CyberButton>
-          
-          <CyberButton onClick={() => setShowLayers(true)} icon={<Layers size={18} />}>
-            Layers
-          </CyberButton>
-          
-          <CyberButton 
-            variant="primary" 
-            onClick={handleSaveDesign} 
-            icon={<Save size={18} />}
-            className="mt-auto"
-          >
-            Save Design
-          </CyberButton>
-        </div>
+        }}
+      />
 
-        {/* Center canvas */}
-        <div className="flex-1 flex flex-col items-center">
-          {/* Top toolbar */}
-          <div className="flex gap-2 mb-4">
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <Undo2 size={18} />
-            </button>
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <Redo2 size={18} />
-            </button>
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <Maximize size={18} />
-            </button>
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <Grid3X3 size={18} />
-            </button>
-            <button className="p-2 rounded-lg bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-all">
-              <ZoomIn size={18} />
-            </button>
-          </div>
-          
-          <ShirtCanvas
-            layers={visibleLayers}
-            selectedLayerId={selectedLayerId}
-            onSelectLayer={setSelectedLayerId}
-            onUpdateLayer={updateLayer}
-            shirtColor={shirtColor}
-            side={side}
-          />
-        </div>
+      {/* Dark overlay for better content visibility */}
+      <div
+        className="fixed inset-0 bg-black/20"
+        style={{ zIndex: 1 }}
+      />
 
-        {/* Right toolbar */}
-        <div className="flex flex-col gap-3 w-full lg:w-48">
-          <CyberButton 
-            onClick={handleResize} 
-            icon={<Maximize2 size={18} />}
-            className={activeMode === 'resize' ? 'border-primary' : ''}
-          >
-            Resize
-          </CyberButton>
-          
-          <CyberButton onClick={handleRotate} icon={<RotateCw size={18} />}>
-            Rotate
-          </CyberButton>
-          
-          <CyberButton 
-            onClick={handleEffects} 
-            icon={<Wand2 size={18} />}
-            className={activeMode === 'effects' ? 'border-primary' : ''}
-          >
-            Effects
-          </CyberButton>
-          
-          <div className="relative">
-            <CyberButton 
-              onClick={() => setShowHalftone(!showHalftone)} 
-              icon={<Grid3X3 size={18} />}
-              className="w-full"
-            >
-              Halftone
-            </CyberButton>
-            <HalftoneSelector
-              isOpen={showHalftone}
-              onClose={() => setShowHalftone(false)}
-              selected={selectedLayer?.effects?.halftone}
-              onSelect={handleHalftone}
+      {/* Content wrapper with relative positioning */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Top Navbar - Logo only */}
+        <TopNavbar />
+
+        {/* Second Navbar - Back button, title, and price */}
+        <SecondNavbar totalPrice={totalPrice} />
+
+        <DecorativeVectors />
+
+        {/* Main content - CENTER LAYOUT with proper spacing */}
+        <main className="flex-1 flex items-start justify-center p-4 md:p-8 ml-[22px]">
+          <div className="flex items-start justify-center gap-0 md:gap-2 w-full max-w-[1600px] mx-auto">
+
+            {/* Left toolbar */}
+            {/* Hidden file input for Upload functionality */}
+            <input
+              key={uploadKey}
+              type="file"
+              id="image-upload-input"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    handleUpload(event.target.result);
+                  };
+                  reader.readAsDataURL(file);
+                  setUploadKey(prev => prev + 1);
+                }
+              }}
+            />
+
+            <LeftToolbar
+              onUploadClick={() => document.getElementById('image-upload-input').click()}
+              onGalleryClick={() => setShowGallery(true)}
+              onAddTextClick={() => setShowTextEditor(true)}
+              onQRCodeClick={() => setShowQRGenerator(true)}
+              onHalftoneClick={() => setShowHalftone(!showHalftone)}
+              onSaveDesignClick={handleSaveDesign}
+            />
+
+            {/* Center canvas */}
+            <div className="flex-1 flex flex-col items-center w-fit">
+              <ShirtCanvas
+                layers={visibleLayers}
+                selectedLayerId={selectedLayerId}
+                onSelectLayer={setSelectedLayerId}
+                onUpdateLayer={updateLayer}
+                shirtColor={shirtColor}
+                onDeleteLayer={handleDeleteLayer}
+                side={side}
+                productImage={productImage}
+              />
+
+              <ViewToggleButtons
+                currentSide={side}
+                onSideChange={setSide}
+              />
+
+              {/* Shade Image 2 under view toggles */}
+              <div className="mt-4">
+                <img src={shade2} alt="Shade 2" className="w-full max-w-[500px] h-auto object-contain mx-auto opacity-80" />
+              </div>
+            </div>
+
+            <div>
+
+            </div>
+
+            {/* Right toolbar */}
+            <RightToolbar
+
+
+              layers={layers}
+              selectedLayerId={selectedLayerId}
+              selectedLayer={selectedLayer}
+              onSelectLayer={setSelectedLayerId}
+              onUpdateLayer={updateLayer}
+              onRemoveLayer={removeLayer}
             />
           </div>
-          
-          <div className="py-2">
-            <ColorPicker selectedColor={shirtColor} onSelect={setShirtColor} />
-          </div>
-          
-          <CyberButton 
-            onClick={() => setSide(side === 'front' ? 'back' : 'front')}
-            className="flex items-center justify-center"
-          >
-            <span className="flex items-center gap-1">
-              Back
-              <ChevronLeft size={16} className="text-primary" />
-              <ChevronRight size={16} className="text-primary" />
-              Front
-            </span>
-          </CyberButton>
-          
-          <CyberButton 
-            variant="primary" 
-            onClick={handleDone}
-            className="mt-auto"
-          >
-            Done
-          </CyberButton>
-        </div>
-      </main>
+        </main>
 
-      {/* Bottom attributes bar */}
-      <div className="p-4">
-        <AttributesBar layer={selectedLayer} onUpdate={updateLayer} />
+        {/* Bottom attributes bar */}
+        {/* <div className="p-4">
+          <AttributesBar layer={selectedLayer} onUpdate={updateLayer} />
+        </div> */}
+
+        {/* Modals */}
+        <Gallery
+          isOpen={showGallery}
+          onClose={() => setShowGallery(false)}
+          onSelect={handleGallerySelect}
+        />
+
+        <TextEditor
+          isOpen={showTextEditor}
+          onClose={() => setShowTextEditor(false)}
+          onAdd={handleAddText}
+        />
+
+        <QRCodeGenerator
+          isOpen={showQRGenerator}
+          onClose={() => setShowQRGenerator(false)}
+          onGenerate={handleAddQR}
+        />
+
+        <LayersPanel
+          isOpen={showLayers}
+          onClose={() => setShowLayers(false)}
+          layers={layers}
+          selectedLayerId={selectedLayerId}
+          onSelect={setSelectedLayerId}
+          onMoveUp={moveLayerUp}
+          onMoveDown={moveLayerDown}
+          onRemove={removeLayer}
+        />
       </div>
-
-      {/* Modals */}
-      <Gallery
-        isOpen={showGallery}
-        onClose={() => setShowGallery(false)}
-        onSelect={handleGallerySelect}
-      />
-      
-      <TextEditor
-        isOpen={showTextEditor}
-        onClose={() => setShowTextEditor(false)}
-        onAdd={handleAddText}
-      />
-      
-      <QRCodeGenerator
-        isOpen={showQRGenerator}
-        onClose={() => setShowQRGenerator(false)}
-        onGenerate={handleAddQR}
-      />
-      
-      <LayersPanel
-        isOpen={showLayers}
-        onClose={() => setShowLayers(false)}
-        layers={layers}
-        selectedLayerId={selectedLayerId}
-        onSelect={setSelectedLayerId}
-        onMoveUp={moveLayerUp}
-        onMoveDown={moveLayerDown}
-        onRemove={removeLayer}
-      />
     </div>
   );
 };
