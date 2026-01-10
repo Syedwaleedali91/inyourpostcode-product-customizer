@@ -1,8 +1,9 @@
-import React from 'react';
-import vector1 from '@/assets/Vector 1.png';
 import vector9 from '@/assets/Vector 9.png';
-import vector7 from '@/assets/Vector 7.png';
 import vector8 from '@/assets/Vector 8.png';
+import vector7 from '@/assets/Vector 7.png';
+import vector1 from '@/assets/Vector 1.png';
+import React from 'react';
+
 
 export const DecorativeVectors = () => {
     return (

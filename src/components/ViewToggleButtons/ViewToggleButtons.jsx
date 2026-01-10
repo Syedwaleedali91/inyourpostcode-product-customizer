@@ -1,20 +1,16 @@
-import React from 'react';
+import { useEditorStore } from '../../store/EditorStore';
+import { ImageSides } from '../../lib/utils';
 
-export const ViewToggleButtons = ({ currentSide, onSideChange }) => {
-    const buttons = [
-        { id: 'front', label: 'FRONT' },
-        { id: 'right-sleeve', label: 'RIGHT SLEEVE' },
-        { id: 'back', label: 'BACK' },
-        { id: 'left-sleeve', label: 'LEFT SLEEVE' }
-    ];
 
+export const ViewToggleButtons = () => {
+    const {activeSide,setSide} = useEditorStore();
     return (
         <div className="flex items-center gap-3 mt-1">
-            {buttons.map(({ id, label }) => (
+            {ImageSides.map(({ id, label }) => (
                 <button
                     key={id}
-                    onClick={() => onSideChange(id)}
-                    className={`px-3 py-1 rounded border-2 transition-all ${currentSide === id
+                    onClick={() => setSide(id)}
+                    className={`px-3 py-1 rounded border-2 transition-all ${activeSide === id
                             ? 'border-primary bg-primary/20 text-primary'
                             : 'border-primary/50 text-white hover:border-primary'
                         }`}

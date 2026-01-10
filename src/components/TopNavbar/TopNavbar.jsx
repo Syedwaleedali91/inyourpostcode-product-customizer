@@ -1,5 +1,6 @@
-import React from 'react';
 import logoImage from '@/assets/logo-fin1.png';
+import React from 'react';
+
 
 export const TopNavbar = () => {
   return (

@@ -17,3 +17,5 @@ export { ViewToggleButtons } from './ViewToggleButtons/ViewToggleButtons';
 export { LeftToolbar } from './LeftToolbar/LeftToolbar';
 export { RightToolbar } from './RightToolbar/RightToolbar';
 export { DecorativeVectors } from './DecorativeVectors/DecorativeVectors';
+export { DesignNode} from './DesignNode/DesignNode';
+export { DeleteButton} from './DesignNode/DeleteButton';

@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export const CyberButton = ({ 
   children, 
   onClick, 
@@ -7,6 +8,7 @@ export const CyberButton = ({
   icon,
   className = '',
   disabled = false,
+  type="button"
 }) => {
   const baseStyles = `
     relative flex items-center justify-center gap-2 px-5 py-3 
@@ -42,6 +44,7 @@ export const CyberButton = ({
 
   return (
     <button
+    type={type}
       onClick={onClick}
       disabled={disabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}

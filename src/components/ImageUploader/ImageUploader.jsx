@@ -1,22 +1,46 @@
-import React, { useRef } from 'react';
-import { Upload } from 'lucide-react';
-import { CyberButton } from '../CyberButton/CyberButton';
+import { Upload } from "lucide-react";
+import { useRef } from "react";
+import { v4 } from "uuid";
 
-export const ImageUploader = ({ onUpload }) => {
+import { useEditorStore } from "../../store/EditorStore";
+import { CyberButton } from "../CyberButton/CyberButton";
+import { loadImage } from "../../lib/utils";
+
+
+export const ImageUploader = () => {
   const inputRef = useRef(null);
+  const { addDesign, printArea, activeSide } = useEditorStore();
 
   const handleClick = () => {
     inputRef.current?.click();
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        onUpload(event.target?.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+
+        console.log(file)
+
+      let image = await loadImage(file);
+
+      addDesign({
+        id: v4(),
+        type: "image",
+        side: activeSide,
+        image: image,
+        x: printArea.x + printArea.width / 4,
+        y: printArea.y + printArea.height / 4,
+        scaleX: 0.5,
+        scaleY: 0.5,
+        rotation: 0,
+        baseWidth: image.width,
+        baseHeight: image.height,
+      });
+      } catch (error) {
+        console.log(error)
+        
+      }
     }
   };
 

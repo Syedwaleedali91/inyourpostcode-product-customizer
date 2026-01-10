@@ -1,18 +1,43 @@
-import React, { useState } from 'react';
-import { X, Type } from 'lucide-react';
-import { CyberButton } from '../CyberButton/CyberButton';
+import { X, Type } from "lucide-react";
+import { useState } from "react";
+import { v4 } from "uuid";
 
-export const TextEditor = ({ isOpen, onClose, onAdd }) => {
-  const [text, setText] = useState('');
-  const [fontSize, setFontSize] = useState(24);
-  const [color, setColor] = useState('#4ade80');
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue, } from "../ui/select";
+import { useEditorStore } from "../../store/EditorStore";
+import { CyberButton } from "../CyberButton/CyberButton";
+import { FONT_LIST } from "../../lib/utils";
+
+
+export const TextEditor = ({ isOpen, onClose }) => {
+  const [text, setText] = useState("");
+  const [fontFamily, setFontFamily] = useState("");
+  const { activeSide, printArea, addDesign } = useEditorStore();
 
   if (!isOpen) return null;
 
-  const handleAdd = () => {
-    if (text.trim()) {
-      onAdd({ text, fontSize, color });
-      setText('');
+  const handleAddText = (e) => {
+    e.preventDefault();
+    if (text.trim()?.length > 0) {
+      addDesign({
+        id: v4(),
+        type: "text",
+        side: activeSide,
+        text: text,
+        fontSize: 30,
+        fontFamily: fontFamily,
+        fontWeight: 600,
+        color: "#fff",
+        x: printArea.width / 4 + printArea.x,
+        y: printArea.height / 4 + printArea.y,
+        scaleX: 1,
+        scaleY: 1,
+        rotation: 0,
+        baseWidth: 200,
+        baseHeight: 50,
+      });
+
+      setText("");
+      setFontFamily("");
       onClose();
     }
   };
@@ -25,24 +50,60 @@ export const TextEditor = ({ isOpen, onClose, onAdd }) => {
             <Type size={20} className="text-primary" />
             <h3 className="font-display text-lg text-foreground">Add Text</h3>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground"
+          >
             <X size={20} />
           </button>
         </div>
-        
-        <div className="space-y-4">
+
+        <form onSubmit={handleAddText} className="space-y-4">
           <div>
-            <label className="block text-sm text-muted-foreground mb-2">Your Text</label>
+            <label className="block text-sm text-muted-foreground mb-2">
+              Font Family
+            </label>
+            <Select
+              required={true}
+              value={fontFamily}
+              onValueChange={(e) => {
+                setFontFamily(e);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder="Font family"
+                  style={{ fontFamily: `${fontFamily} !important` }}
+                >
+                  {fontFamily}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {FONT_LIST.map((item) => (
+                  <SelectItem key={item.css} value={item?.css}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm text-muted-foreground mb-2">
+              Your Text
+            </label>
             <input
+              required={true}
               type="text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Type your text here..."
               className="input-cyber w-full"
+              maxLength={150}
             />
           </div>
-          
-          <div className="flex gap-4">
+
+          {/* <div className="flex gap-4">
             <div className="flex-1">
               <label className="block text-sm text-muted-foreground mb-2">Font Size</label>
               <input
@@ -63,17 +124,17 @@ export const TextEditor = ({ isOpen, onClose, onAdd }) => {
                 className="w-full h-10 rounded-lg cursor-pointer bg-input border border-border"
               />
             </div>
-          </div>
-          
+          </div> */}
+
           <div className="flex gap-2">
             <CyberButton onClick={onClose} className="flex-1">
               Cancel
             </CyberButton>
-            <CyberButton variant="primary" onClick={handleAdd} className="flex-1">
+            <CyberButton type="submit" variant="primary" className="flex-1">
               Add Text
             </CyberButton>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
