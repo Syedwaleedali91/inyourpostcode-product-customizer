@@ -4,7 +4,7 @@ import ShirtRight from "@/assets/shirt/right.png";
 import ShirtFront from "@/assets/shirt/front.png";
 import ShirtLeft from "@/assets/shirt/left.png";
 import ShirtBack from "@/assets/shirt/back.png";
-import shade2 from "@/assets/shade image 2.png";
+import shade2 from "@/assets/shade-image-2.png";
 
 
 export const Customizer = () => {

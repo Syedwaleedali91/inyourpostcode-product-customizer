@@ -1,6 +1,6 @@
 import { Eye, EyeOff, Lock, Unlock, Trash2, Frame, Scan } from "lucide-react";
 import rotateBottomImage from "@/assets/rotate-bottom.png";
-import shade3 from "@/assets/shade image 3.png";
+import shade3 from "@/assets/shade-image-3.png";
 import heightImage from "@/assets/height.png";
 import needHelp from "@/assets/needHelp.png";
 import widthImage from "@/assets/width.png";
@@ -37,7 +37,7 @@ export const RightToolbar = () => {
     if (!selectedDesign) {
       return 0;
     } else {
-      return selectedDesign?.baseHeight * selectedDesign.scaleX;
+      return selectedDesign?.baseHeight * selectedDesign.scaleY;
     }
   }, [selectedDesign]);
 
@@ -138,10 +138,10 @@ export const RightToolbar = () => {
               onChange={(e) => {
                 const newHeight = Number(e.target.value);
                 updateDesign(activeDesignId, {
-                  scaleY: newHeight / selectedDesign?.baseHeight || 0,
+                  scaleY: newHeight / selectedDesign?.baseHeight,
                 });
               }}
-              placeholder="WIDTH"
+              placeholder="HEIGHT"
             />
 
             {/* <img src={widthImage} alt="Width" className="w-full h-auto" /> */}

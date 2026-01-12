@@ -8,6 +8,8 @@ export function DesignNode({ design }: { design: Design }) {
 
   const updateDesign = useEditorStore((s) => s.updateDesign);
   const setActiveDesign = useEditorStore((s) => s.setActiveDesign);
+  const activeDesignState = useEditorStore((s) => s.currentState);
+  const saveHistory = useEditorStore((s) => s.saveHistory);
 
   const commonProps = {
     id: design.id,
@@ -22,21 +24,26 @@ export function DesignNode({ design }: { design: Design }) {
     onTap: () => (design?.locked ? {} : setActiveDesign(design.id)),
 
     onDragEnd: (e: any) => {
-      updateDesign(design.id, {
+      const updatedDesign = {
         x: e.target.x(),
         y: e.target.y(),
-      });
+      };
+      updateDesign(design.id, updatedDesign);
+      saveHistory({ ...activeDesignState, ...updatedDesign });
+
     },
 
     onTransformEnd: (e: any) => {
       const node = e.target;
-      updateDesign(design.id, {
+      const updatedDesign = {
         x: node.x(),
         y: node.y(),
         scaleX: node.scaleX(),
         scaleY: node.scaleY(),
         rotation: node.rotation(),
-      });
+      }
+      updateDesign(design.id, updatedDesign);
+      saveHistory({ ...activeDesignState, ...updatedDesign });
     },
   };
 

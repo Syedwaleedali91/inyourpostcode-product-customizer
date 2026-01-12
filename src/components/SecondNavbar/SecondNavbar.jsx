@@ -1,8 +1,9 @@
-import React from 'react';
+import backButtonImage from '@/assets/Frame-46.png';
+import continueBtn from '@/assets/continue.png';
 import { useNavigate } from 'react-router-dom';
-import backButtonImage from '@/assets/Frame 46.png';
-import vector1 from '@/assets/Vector 1.png';
-import continueBtn from '@/assets/continue.png'
+import vector1 from '@/assets/Vector-1.png';
+import React from 'react';
+
 
 export const SecondNavbar = ({ totalPrice }) => {
   const navigate = useNavigate();

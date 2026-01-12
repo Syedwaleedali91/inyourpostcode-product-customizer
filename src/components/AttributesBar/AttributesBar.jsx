@@ -1,9 +1,10 @@
-import React from 'react';
-import widthImage from '@/assets/width.png';
-import heightImage from '@/assets/height.png';
 import rotateImage from '@/assets/rotate-bottom.png';
 import resizeImage from '@/assets/resize-bottom.png';
-import bottomLine from '@/assets/Vector 11.png';
+import bottomLine from '@/assets/Vector-11.png';
+import heightImage from '@/assets/height.png';
+import widthImage from '@/assets/width.png';
+import React from 'react';
+
 
 export const AttributesBar = ({ layer, onUpdate }) => {
   return (

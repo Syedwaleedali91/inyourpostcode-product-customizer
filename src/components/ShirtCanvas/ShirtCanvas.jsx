@@ -4,7 +4,7 @@ import useImage from "use-image";
 
 import { useEditorStore } from "../../store/EditorStore";
 import { DesignNode, DeleteButton } from "../index";
-import group7Image from "../../assets/Group 7.png";
+import group7Image from "../../assets/Group-7.png";
 import { PRINT_AREA_RATIO } from "../../lib/utils";
 
 
@@ -160,6 +160,7 @@ export const ShirtCanvas = ({
           height={stageSize.height}
           className="bg-transparent!"
           ref={canvasRef}
+          // onDragEnd={save}
         >
           {/* SHIRT */}
           <Layer listening={false}>

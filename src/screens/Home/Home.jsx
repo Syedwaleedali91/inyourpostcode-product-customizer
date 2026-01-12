@@ -1,9 +1,10 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shirt, Sparkles, Palette, Layers } from 'lucide-react';
 import { CyberButton, ProductCard } from '@/components/index.js';
-import productImage from '@/assets/Group 10.png';
+import { Shirt, Sparkles, Palette, Layers } from 'lucide-react';
+import productImage from '@/assets/Group-10.png';
 import logoImage from '@/assets/logo-fin1.png';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
+
 
 export const Home = () => {
   const navigate = useNavigate();

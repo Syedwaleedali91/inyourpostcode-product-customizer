@@ -42,6 +42,9 @@ interface PrintArea {
 }
 
 interface EditorState {
+  undo: any[];
+  redo: any[];
+  currentState:Design | null;
   stageRef?: any;
   activeSide: Side;
   activeDesignId: string | null;
@@ -53,13 +56,18 @@ interface EditorState {
   scale: number;
   printArea: PrintArea;
 
+  setRedo: (redo: any[]) => void;
+  setUndo: (undo: any[]) => void;
+
+  saveHistory: (data: any) => void;
+
   setStageSize: (size: Size) => void;
   setShirtSize: (size: Size) => void;
   setScale: (scale: number) => void;
   setPrintArea: (area: PrintArea) => void;
 
   setSide: (side: Side) => void;
-  setStageRef: (ref:any) => void;
+  setStageRef: (ref: any) => void;
   setDimensions: (name: string, value: any) => void;
   setActiveDesign: (id: string | null) => void;
 
@@ -68,7 +76,10 @@ interface EditorState {
   removeDesign: (id: string) => void;
 }
 
-export const useEditorStore = create<EditorState>((set) => ({
+export const useEditorStore = create<EditorState>((set,get) => ({
+  undo: [],
+  redo: [],
+  currentState: null,
   stageRef: null,
   activeSide: "front",
   activeDesignId: null,
@@ -76,6 +87,64 @@ export const useEditorStore = create<EditorState>((set) => ({
   shirtSize: { width: 0, height: 0 },
   scale: 1,
   printArea: { x: 0, y: 0, width: 0, height: 0 },
+
+  setUndo: () => {
+    const {undo,redo, activeSide, currentState} = get();
+    if(!undo.length) return;
+    const applyToCurrent = undo[undo.length - 1];
+    if(!applyToCurrent) return;
+    set({
+      redo: [currentState,...redo],
+      undo: undo.length === 1 ? [] : undo.slice(0, -1),
+      currentState:applyToCurrent
+    });
+    set((state) => ({
+      designs: {
+        ...state.designs,
+        [activeSide]:state.designs[activeSide].map((d) =>
+          d.id === applyToCurrent.id ? { ...d, ...applyToCurrent } : d
+        ) 
+      },
+      activeDesignId: applyToCurrent.id,
+    }));
+  },
+
+  setRedo: () => {
+    const {undo,redo, activeSide,currentState} = get();
+    if(!redo.length) return;
+    const applyToCurrent = redo[0];
+    if(!applyToCurrent) return;
+    set({
+      undo: [...undo, currentState],
+      redo: redo.slice(1),
+      currentState:applyToCurrent
+    });
+    set((state) => ({
+      designs: {
+        ...state.designs,
+        [activeSide]:state.designs[activeSide].map((d) =>
+          d.id === applyToCurrent.id ? { ...d, ...applyToCurrent } : d
+        ) 
+      },
+      activeDesignId: applyToCurrent.id,
+    }));
+  },
+
+  saveHistory: (data) =>{
+    let currentState = get().currentState;
+    let undo = [];
+    if(get().undo.length){
+      undo.push(...get().undo);
+    }
+    if(currentState){
+      undo.push(currentState);
+    }
+    set(() => ({
+      undo,
+      redo: [],
+      currentState: data,
+    }))
+  },
 
   setStageSize: (stageSize) => set({ stageSize }),
   setShirtSize: (shirtSize) => set({ shirtSize }),
@@ -90,7 +159,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   },
 
   setSide: (side) => set({ activeSide: side, activeDesignId: null }),
-  setStageRef: (ref:any) => set({ stageRef: ref }),
+  setStageRef: (ref: any) => set({ stageRef: ref }),
 
   setDimensions: (name: string, value: any) =>
     set((state) => ({

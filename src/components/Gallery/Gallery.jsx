@@ -17,7 +17,11 @@ const defaultImages = [wm1, wm2, wm3, wm4];
 export const Gallery = ({ isOpen, onClose }) => {
   const [images, setImages] = useState(defaultImages);
   const inputRef = useRef(null);
-  const { activeSide, addDesign, printArea } = useEditorStore();
+  const { activeSide,designs, addDesign, printArea,stageRef,saveHistory,currentState,redo,undo} = useEditorStore();
+  console.log(currentState,'current state')
+  console.log(redo,'redo')
+  console.log(undo,'undo')
+  console.log(designs,'designs')
 
   if (!isOpen) return null;
 
@@ -38,8 +42,14 @@ export const Gallery = ({ isOpen, onClose }) => {
 
   const handleSelectImage = async (img) => {
     try {
+      if(stageRef.current){
+        saveHistory(stageRef.current.toJSON())
+      }else{
+        toast.error("Failed to save history.");
+      }
       const image = await loadImage(img);
-      addDesign({
+
+      const design ={
         id: v4(),
         type: "image",
         side: activeSide,
@@ -51,7 +61,9 @@ export const Gallery = ({ isOpen, onClose }) => {
         rotation: 0,
         baseWidth: image.width,
         baseHeight: image.height,
-      });
+      }
+      saveHistory(design)
+      addDesign(design); 
       onClose();
     } catch (error) {
       toast.error(error?.message);

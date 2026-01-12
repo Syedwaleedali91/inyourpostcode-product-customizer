@@ -1,8 +1,10 @@
-import saveDesignImage from "@/assets/Save Design.png";
-import artGalleryImage from "@/assets/Art Gallery.png";
-import halftoneImage from "@/assets/Half tone.png";
-import addTextImage from "@/assets/Add Text.png";
-import qrCodeImage from "@/assets/Qr Code.png";
+import saveDesignImage from "@/assets/Save-Design.png";
+import artGalleryImage from "@/assets/Art-Gallery.png";
+import halftoneImage from "@/assets/Half-tone.png";
+import undoBtnImage from "@/assets/btn-undo.png";
+import redoBtnImage from "@/assets/btn-redo.png";
+import addTextImage from "@/assets/Add-Text.png";
+import qrCodeImage from "@/assets/Qr-Code.png";
 import uploadImage from "@/assets/Upload.png";
 import needHelp from "@/assets/needHelp.png";
 import danger from "@/assets/danger.png";
@@ -22,7 +24,14 @@ import { useModal } from "../../hooks";
 
 export const LeftToolbar = memo(() => {
   const inputRef = useRef(null);
-  const { addDesign, activeSide, printArea, stageRef } = useEditorStore();
+  const {
+    addDesign,
+    activeSide,
+    printArea,
+    stageRef,
+    setRedo,
+    setUndo,
+  } = useEditorStore();
   const galleryModal = useModal();
   const textModal = useModal();
   const qrModal = useModal();
@@ -111,6 +120,22 @@ export const LeftToolbar = memo(() => {
           <div className="rounded-lg">
             <img src={danger} alt="Danger" className="w-8 h-8" />
           </div>
+          {/* <div className="rounded-lg">
+            <img
+              src={undoBtnImage}
+              onClick={setUndo}
+              alt="Danger"
+              className="w-8 h-8"
+            />
+          </div>
+          <div className="rounded-lg">
+            <img
+              src={redoBtnImage}
+              onClick={setRedo}
+              alt="Danger"
+              className="w-8 h-8"
+            />
+          </div> */}
         </div>
 
         {/* Upload button with hidden file input */}
